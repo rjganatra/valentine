@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Dhyanveeee ❤️</title>
+    <title>For Dhyanaaa ❤️</title>
     <style>
         body {
             display: flex;
@@ -14,7 +14,6 @@
             background-color: #ffe6ea;
             font-family: 'Arial', sans-serif;
             overflow: hidden;
-            cursor: default;
         }
         .container {
             text-align: center;
@@ -23,8 +22,6 @@
             border-radius: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             max-width: 500px;
-            position: relative;
-            z-index: 10; /* Keep buttons above the hearts */
         }
         h1 { color: #d63384; margin-bottom: 30px; line-height: 1.4; }
         .buttons {
@@ -49,34 +46,13 @@
         }
         #celebration { display: none; }
         img { width: 100%; max-width: 350px; border-radius: 15px; margin-top: 20px; }
-
-        /* Heart Trail Styling */
-        .heart-particle {
-            position: absolute;
-            color: #ff4d6d;
-            pointer-events: none; /* Prevents hearts from blocking clicks */
-            font-size: 20px;
-            animation: floatUp 2s linear forwards;
-            z-index: 1;
-        }
-
-        @keyframes floatUp {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100px) rotate(360deg);
-                opacity: 0;
-            }
-        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div id="question-section">
-            <h1 id="question-text">Dhyanveeee, will you be my Valentine? 💖</h1>
+            <h1 id="question-text">Dhyanaaa, will you be my Valentine? 💖</h1>
             <div class="buttons">
                 <button id="yesBtn">Yes</button>
                 <button id="noBtn">No</button>
@@ -84,7 +60,7 @@
         </div>
 
         <div id="celebration">
-            <h1>YAY! Best decision ever! 🎉</h1>
+            <h1>I love you babe. You're the best 🫂❤️ </h1>
             <img src="https://media.giphy.com/media/xULW8Bx2HlkdALCRQk/giphy.gif" alt="Jim and Pam Celebration">
         </div>
     </div>
@@ -95,29 +71,7 @@
         const questionSection = document.getElementById('question-section');
         const celebration = document.getElementById('celebration');
 
-        // 1. Heart Trail Animation
-        document.addEventListener('mousemove', (e) => {
-            const heart = document.createElement('span');
-            heart.innerHTML = '❤️';
-            heart.classList.add('heart-particle');
-            
-            // Position the heart at the cursor
-            heart.style.left = e.pageX + 'px';
-            heart.style.top = e.pageY + 'px';
-            
-            // Randomize size slightly for a natural look
-            const size = Math.random() * 20 + 10;
-            heart.style.fontSize = size + 'px';
-            
-            document.body.appendChild(heart);
-
-            // Remove the heart from the page after animation finishes
-            setTimeout(() => {
-                heart.remove();
-            }, 2000);
-        });
-
-        // 2. The "No" Button Run Away Logic
+        // The "Run Away" Logic
         noBtn.addEventListener('mouseover', () => {
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
@@ -126,7 +80,7 @@
             noBtn.style.top = `${y}px`;
         });
 
-        // 3. The "Yes" Button Success Logic
+        // The "Success" Logic
         yesBtn.addEventListener('click', () => {
             questionSection.style.display = 'none';
             celebration.style.display = 'block';
