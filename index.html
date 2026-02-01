@@ -50,6 +50,8 @@
 </head>
 <body>
 
+    <audio id="successSound" src="https://www.myinstants.com/media/sounds/tada.mp3"></audio>
+
     <div class="container">
         <div id="question-section">
             <h1 id="question-text">Dhyanaaa, will you be my Valentine? 💖</h1>
@@ -60,7 +62,7 @@
         </div>
 
         <div id="celebration">
-            <h1>I love you babe. You're the best 🫂❤️ </h1>
+            <h1>I knew you couldn't resist! Now you're stuck with me. No refunds! 😉🔥</h1>
             <img src="https://media.giphy.com/media/xULW8Bx2HlkdALCRQk/giphy.gif" alt="Jim and Pam Celebration">
         </div>
     </div>
@@ -70,6 +72,7 @@
         const yesBtn = document.getElementById('yesBtn');
         const questionSection = document.getElementById('question-section');
         const celebration = document.getElementById('celebration');
+        const successSound = document.getElementById('successSound');
 
         // The "Run Away" Logic
         noBtn.addEventListener('mouseover', () => {
@@ -84,6 +87,11 @@
         yesBtn.addEventListener('click', () => {
             questionSection.style.display = 'none';
             celebration.style.display = 'block';
+            
+            // Play the sound
+            successSound.play().catch(error => {
+                console.log("Audio play failed, likely due to browser policy:", error);
+            });
         });
     </script>
 </body>
