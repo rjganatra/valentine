@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For Dhyanuuu ❤️</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         body {
             display: flex;
@@ -41,7 +42,7 @@
             justify-content: center;
             align-items: center;
             gap: 20px;
-            min-height: 200px; 
+            min-height: 250px; 
             position: relative;
         }
 
@@ -57,7 +58,7 @@
         #yesBtn { 
             background-color: #ff4d6d; 
             color: white; 
-            z-index: 100; /* Always on top */
+            z-index: 100;
             position: relative;
         }
         
@@ -65,7 +66,6 @@
             background-color: #adb5bd; 
             color: white; 
             z-index: 50;
-            position: relative; /* Starts relative, becomes fixed on hover */
         }
 
         #celebration { display: none; }
@@ -84,7 +84,7 @@
 </head>
 <body>
 
-    <audio id="successSound" src="https://assets.mixkit.co/active_storage/sfx/2345/2345-preview.mp3" preload="auto"></audio>
+    <audio id="successSound" src="https://www.myinstants.com/media/sounds/audience_applause.mp3" preload="auto"></audio>
 
     <div class="container">
         <div id="pre-landing">
@@ -112,18 +112,14 @@
     <script>
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
-        const questionSection = document.getElementById('question-section');
-        const celebration = document.getElementById('celebration');
         const successSound = document.getElementById('successSound');
-        const preLanding = document.getElementById('pre-landing');
-        const mainContent = document.getElementById('main-content');
 
         let yesScale = 1;
 
         function showQuestion() {
-            preLanding.style.display = 'none';
-            mainContent.style.display = 'block';
-            // Pre-playing silent to "warm up" the audio for mobile browsers
+            document.getElementById('pre-landing').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            // Unlock audio context
             successSound.play().then(() => {
                 successSound.pause();
                 successSound.currentTime = 0;
@@ -131,21 +127,17 @@
         }
 
         function moveButton() {
-            // 1. Growth
-            yesScale += 0.15; 
+            yesScale += 0.2; 
             yesBtn.style.transform = `scale(${yesScale})`;
 
-            // 2. Jumping Logic with "Anti-Overlap"
             const yesRect = yesBtn.getBoundingClientRect();
             let newX, newY;
-            let padding = 20;
+            const padding = 50;
 
-            // Loop to ensure No button doesn't land under the Yes button
             do {
                 newX = Math.random() * (window.innerWidth - noBtn.offsetWidth - padding);
                 newY = Math.random() * (window.innerHeight - noBtn.offsetHeight - padding);
             } while (
-                // Check if the new coordinates overlap with the Yes button area
                 newX < yesRect.right + padding &&
                 newX + noBtn.offsetWidth > yesRect.left - padding &&
                 newY < yesRect.bottom + padding &&
@@ -158,15 +150,31 @@
         }
 
         noBtn.addEventListener('mouseover', moveButton);
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            moveButton();
-        });
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
 
         yesBtn.addEventListener('click', () => {
-            questionSection.style.display = 'none';
-            celebration.style.display = 'block';
+            document.getElementById('question-section').style.display = 'none';
+            document.getElementById('celebration').style.display = 'block';
+            
+            // 1. Play Yay Sound
             successSound.play();
+
+            // 2. Fire Confetti
+            var duration = 5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+              return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+              var timeLeft = animationEnd - Date.now();
+              if (timeLeft <= 0) { return clearInterval(interval); }
+              var particleCount = 50 * (timeLeft / duration);
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
         });
     </script>
 </body>
