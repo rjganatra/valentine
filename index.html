@@ -41,9 +41,10 @@
         .buttons {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 20px;
-            height: 60px;
-            position: relative; /* Container for absolute buttons */
+            min-height: 150px; /* Space for the growing Yes button */
+            position: relative;
         }
 
         button {
@@ -52,16 +53,20 @@
             border: none;
             border-radius: 12px;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        #yesBtn { background-color: #ff4d6d; color: white; z-index: 20; }
+        #yesBtn { 
+            background-color: #ff4d6d; 
+            color: white; 
+            z-index: 20;
+            position: relative;
+        }
         
         #noBtn { 
             background-color: #adb5bd; 
             color: white; 
-            position: absolute; /* Changed to absolute for reliable jumping */
-            transition: all 0.1s ease;
+            z-index: 15;
         }
 
         #celebration { display: none; }
@@ -80,10 +85,7 @@
 </head>
 <body>
 
-    <audio id="successSound">
-        <source src="https://www.soundjay.com/human/sounds/applause-01.mp3" type="audio/mpeg">
-        <source src="https://assets.mixkit.co/active_storage/sfx/2345/2345-preview.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="successSound" src="https://assets.mixkit.co/active_storage/sfx/2345/2345-preview.mp3"></audio>
 
     <div class="container">
         <div id="pre-landing">
@@ -97,7 +99,7 @@
                 <h1 id="question-text">Hiiii Dhyanveeee 🫠, will you be my Valentine? 💖</h1>
                 <div class="buttons">
                     <button id="yesBtn">Yes</button>
-                    <button id="noBtn" style="left: 60%; transform: translateX(-50%);">No</button>
+                    <button id="noBtn">No</button>
                 </div>
             </div>
 
@@ -117,37 +119,41 @@
         const preLanding = document.getElementById('pre-landing');
         const mainContent = document.getElementById('main-content');
 
-        // Initial setup for No button location
+        let yesScale = 1;
+        let noClicks = 0;
+
         function showQuestion() {
             preLanding.style.display = 'none';
             mainContent.style.display = 'block';
-            // Pre-load audio to bypass browser blocks
-            successSound.load();
+            successSound.load(); 
         }
 
-        // IMPROVED Run Away Logic
-        noBtn.addEventListener('mouseover', moveButton);
-        noBtn.addEventListener('touchstart', moveButton); // For mobile users
-
+        // Run Away + Growth Logic
         function moveButton() {
-            // Calculate random positions within the visible window
-            // Subtracting button dimensions so it doesn't go off edge
+            // 1. Make the Yes button bigger
+            yesScale += 0.2; 
+            yesBtn.style.transform = `scale(${yesScale})`;
+
+            // 2. Move the No button
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 20);
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 20);
             
-            // Apply to button, moving it relative to the whole screen now
             noBtn.style.position = 'fixed'; 
             noBtn.style.left = `${x}px`;
             noBtn.style.top = `${y}px`;
         }
 
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevents accidental clicks on mobile
+            moveButton();
+        });
+
         // Success Logic
         yesBtn.addEventListener('click', () => {
             questionSection.style.display = 'none';
             celebration.style.display = 'block';
-            
-            // Play sound - if the first link fails, it tries the second one in the HTML
-            successSound.play().catch(e => console.log("Sound failed:", e));
+            successSound.play().catch(e => console.log("Audio help:", e));
         });
     </script>
 </body>
