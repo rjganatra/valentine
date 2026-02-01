@@ -26,7 +26,6 @@
             z-index: 10;
         }
 
-        /* Pre-landing */
         #pre-landing {
             display: flex;
             flex-direction: column;
@@ -34,7 +33,6 @@
         }
         .heart-icon { font-size: 80px; margin-bottom: 20px; }
 
-        /* Main Content */
         #main-content { display: none; }
         h1 { color: #d63384; margin-bottom: 30px; line-height: 1.4; }
         
@@ -43,7 +41,7 @@
             justify-content: center;
             align-items: center;
             gap: 20px;
-            min-height: 150px; /* Space for the growing Yes button */
+            min-height: 200px; 
             position: relative;
         }
 
@@ -59,14 +57,15 @@
         #yesBtn { 
             background-color: #ff4d6d; 
             color: white; 
-            z-index: 20;
+            z-index: 100; /* Always on top */
             position: relative;
         }
         
         #noBtn { 
             background-color: #adb5bd; 
             color: white; 
-            z-index: 15;
+            z-index: 50;
+            position: relative; /* Starts relative, becomes fixed on hover */
         }
 
         #celebration { display: none; }
@@ -85,7 +84,7 @@
 </head>
 <body>
 
-    <audio id="successSound" src="https://www.myinstants.com/media/sounds/cheer_8.mp3"></audio>
+    <audio id="successSound" src="https://assets.mixkit.co/active_storage/sfx/2345/2345-preview.mp3" preload="auto"></audio>
 
     <div class="container">
         <div id="pre-landing">
@@ -120,43 +119,55 @@
         const mainContent = document.getElementById('main-content');
 
         let yesScale = 1;
-        let noClicks = 0;
 
         function showQuestion() {
             preLanding.style.display = 'none';
             mainContent.style.display = 'block';
-            successSound.load(); 
+            // Pre-playing silent to "warm up" the audio for mobile browsers
+            successSound.play().then(() => {
+                successSound.pause();
+                successSound.currentTime = 0;
+            }).catch(() => {});
         }
 
-        // Run Away + Growth Logic
         function moveButton() {
-            // 1. Make the Yes button bigger
-            yesScale += 0.2; 
+            // 1. Growth
+            yesScale += 0.15; 
             yesBtn.style.transform = `scale(${yesScale})`;
 
-            // 2. Move the No button
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 20);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 20);
-            
+            // 2. Jumping Logic with "Anti-Overlap"
+            const yesRect = yesBtn.getBoundingClientRect();
+            let newX, newY;
+            let padding = 20;
+
+            // Loop to ensure No button doesn't land under the Yes button
+            do {
+                newX = Math.random() * (window.innerWidth - noBtn.offsetWidth - padding);
+                newY = Math.random() * (window.innerHeight - noBtn.offsetHeight - padding);
+            } while (
+                // Check if the new coordinates overlap with the Yes button area
+                newX < yesRect.right + padding &&
+                newX + noBtn.offsetWidth > yesRect.left - padding &&
+                newY < yesRect.bottom + padding &&
+                newY + noBtn.offsetHeight > yesRect.top - padding
+            );
+
             noBtn.style.position = 'fixed'; 
-            noBtn.style.left = `${x}px`;
-            noBtn.style.top = `${y}px`;
+            noBtn.style.left = `${newX}px`;
+            noBtn.style.top = `${newY}px`;
         }
 
         noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Prevents accidental clicks on mobile
+            e.preventDefault();
             moveButton();
         });
 
-        // Success Logic
         yesBtn.addEventListener('click', () => {
             questionSection.style.display = 'none';
             celebration.style.display = 'block';
-            successSound.play().catch(e => console.log("Audio help:", e));
+            successSound.play();
         });
     </script>
 </body>
 </html>
-
-
