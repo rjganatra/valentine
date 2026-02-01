@@ -22,7 +22,28 @@
             border-radius: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             max-width: 500px;
+            position: relative;
         }
+
+        /* Pre-landing Styles */
+        #pre-landing {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .heart-icon {
+            font-size: 80px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            display: block;
+            margin-bottom: 20px;
+        }
+        .heart-icon:hover {
+            transform: scale(1.2);
+        }
+
+        /* Main Content Styles */
+        #main-content { display: none; }
         h1 { color: #d63384; margin-bottom: 30px; line-height: 1.4; }
         .buttons {
             display: flex;
@@ -46,24 +67,42 @@
         }
         #celebration { display: none; }
         img { width: 100%; max-width: 350px; border-radius: 15px; margin-top: 20px; }
+        
+        .open-btn {
+            background-color: #ff4d6d;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-    <audio id="successSound" src="https://www.myinstants.com/media/sounds/tada.mp3"></audio>
+    <audio id="successSound" src="https://www.myinstants.com/media/sounds/aww-meme.mp3"></audio>
 
     <div class="container">
-        <div id="question-section">
-            <h1 id="question-text">Hiiii Dhyanveeee 🫠, will you be my Valentine? 💖</h1>
-            <div class="buttons">
-                <button id="yesBtn">Yes</button>
-                <button id="noBtn">No</button>
-            </div>
+        <div id="pre-landing">
+            <span class="heart-icon">💌</span>
+            <h1>Hii Dhyanuuu, you have one new message...</h1>
+            <button class="open-btn" onclick="showQuestion()">Click to Open</button>
         </div>
 
-        <div id="celebration">
-            <h1>I knew you couldn't resist! Now you're stuck with me. No refunds! 😉🔥</h1>
-            <img src="https://media.giphy.com/media/xULW8Bx2HlkdALCRQk/giphy.gif" alt="Jim and Pam Celebration">
+        <div id="main-content">
+            <div id="question-section">
+                <h1 id="question-text">Hiiii Dhyanveeee 🫠, will you be my Valentine? 💖</h1>
+                <div class="buttons">
+                    <button id="yesBtn">Yes</button>
+                    <button id="noBtn">No</button>
+                </div>
+            </div>
+
+            <div id="celebration">
+                <h1>I knew you couldn't resist! Now you're stuck with me. No refunds! 😉🔥</h1>
+                <img src="https://media.giphy.com/media/xULW8Bx2HlkdALCRQk/giphy.gif" alt="Jim and Pam Celebration">
+            </div>
         </div>
     </div>
 
@@ -73,6 +112,14 @@
         const questionSection = document.getElementById('question-section');
         const celebration = document.getElementById('celebration');
         const successSound = document.getElementById('successSound');
+        const preLanding = document.getElementById('pre-landing');
+        const mainContent = document.getElementById('main-content');
+
+        // Logic to switch from Pre-landing to Question
+        function showQuestion() {
+            preLanding.style.display = 'none';
+            mainContent.style.display = 'block';
+        }
 
         // The "Run Away" Logic
         noBtn.addEventListener('mouseover', () => {
@@ -88,13 +135,11 @@
             questionSection.style.display = 'none';
             celebration.style.display = 'block';
             
-            // Play the sound
+            // Play the Awwww sound
             successSound.play().catch(error => {
-                console.log("Audio play failed, likely due to browser policy:", error);
+                console.log("Audio failed to play:", error);
             });
         });
     </script>
 </body>
 </html>
-
-
