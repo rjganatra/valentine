@@ -22,35 +22,30 @@
             border-radius: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             max-width: 500px;
-            position: relative;
+            width: 90%;
+            z-index: 10;
         }
 
-        /* Pre-landing Styles */
+        /* Pre-landing */
         #pre-landing {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .heart-icon {
-            font-size: 80px;
-            cursor: pointer;
-            transition: transform 0.3s;
-            display: block;
-            margin-bottom: 20px;
-        }
-        .heart-icon:hover {
-            transform: scale(1.2);
-        }
+        .heart-icon { font-size: 80px; margin-bottom: 20px; }
 
-        /* Main Content Styles */
+        /* Main Content */
         #main-content { display: none; }
         h1 { color: #d63384; margin-bottom: 30px; line-height: 1.4; }
+        
         .buttons {
             display: flex;
             justify-content: center;
             gap: 20px;
-            height: 50px;
+            height: 60px;
+            position: relative; /* Container for absolute buttons */
         }
+
         button {
             padding: 10px 25px;
             font-size: 1.2rem;
@@ -59,12 +54,16 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
-        #yesBtn { background-color: #ff4d6d; color: white; }
+
+        #yesBtn { background-color: #ff4d6d; color: white; z-index: 20; }
+        
         #noBtn { 
             background-color: #adb5bd; 
             color: white; 
-            position: absolute; 
+            position: absolute; /* Changed to absolute for reliable jumping */
+            transition: all 0.1s ease;
         }
+
         #celebration { display: none; }
         img { width: 100%; max-width: 350px; border-radius: 15px; margin-top: 20px; }
         
@@ -81,7 +80,10 @@
 </head>
 <body>
 
-    <audio id="successSound" src="https://www.myinstants.com/media/sounds/aww-meme.mp3"></audio>
+    <audio id="successSound">
+        <source src="https://www.soundjay.com/human/sounds/applause-01.mp3" type="audio/mpeg">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2345/2345-preview.mp3" type="audio/mpeg">
+    </audio>
 
     <div class="container">
         <div id="pre-landing">
@@ -95,7 +97,7 @@
                 <h1 id="question-text">Hiiii Dhyanveeee 🫠, will you be my Valentine? 💖</h1>
                 <div class="buttons">
                     <button id="yesBtn">Yes</button>
-                    <button id="noBtn">No</button>
+                    <button id="noBtn" style="left: 60%; transform: translateX(-50%);">No</button>
                 </div>
             </div>
 
@@ -115,30 +117,37 @@
         const preLanding = document.getElementById('pre-landing');
         const mainContent = document.getElementById('main-content');
 
-        // Logic to switch from Pre-landing to Question
+        // Initial setup for No button location
         function showQuestion() {
             preLanding.style.display = 'none';
             mainContent.style.display = 'block';
+            // Pre-load audio to bypass browser blocks
+            successSound.load();
         }
 
-        // The "Run Away" Logic
-        noBtn.addEventListener('mouseover', () => {
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+        // IMPROVED Run Away Logic
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', moveButton); // For mobile users
+
+        function moveButton() {
+            // Calculate random positions within the visible window
+            // Subtracting button dimensions so it doesn't go off edge
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 20);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 20);
             
+            // Apply to button, moving it relative to the whole screen now
+            noBtn.style.position = 'fixed'; 
             noBtn.style.left = `${x}px`;
             noBtn.style.top = `${y}px`;
-        });
+        }
 
-        // The "Success" Logic
+        // Success Logic
         yesBtn.addEventListener('click', () => {
             questionSection.style.display = 'none';
             celebration.style.display = 'block';
             
-            // Play the Awwww sound
-            successSound.play().catch(error => {
-                console.log("Audio failed to play:", error);
-            });
+            // Play sound - if the first link fails, it tries the second one in the HTML
+            successSound.play().catch(e => console.log("Sound failed:", e));
         });
     </script>
 </body>
